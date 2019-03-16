@@ -49,6 +49,7 @@ var octopus = {
         // tell our views to initialize
         catListView.init();
         catView.init();
+        adminMenuView.init();
     },
 
     getCurrentCat: function() {
@@ -67,6 +68,35 @@ var octopus = {
     // increments the counter for the currently-selected cat
     incrementCounter: function() {
         model.currentCat.clickCount++;
+        catView.render();
+    },
+
+    getFormInfo: function(clickCount,catName,URL) {
+        return octopus.setNewCatInfo(clickCount,catName,URL)
+    },
+
+    setNewCatInfo: function(clickCount,catName,URL) {
+        let newCatInfo = [clickCount,catName,URL];
+        let currentCat = octopus.getCurrentCat();
+
+        for (var i = 0; i <= newCatInfo.length ; i++) {
+            if (newCatInfo[i] !== "" || undefined || null) {
+
+                switch (i) {
+                    case 0 :
+                        currentCat.clickCount = newCatInfo[0];
+                        break
+                    case 1 :
+                        currentCat.name = newCatInfo[1];
+                        break
+                    case 2 :
+                        currentCat.URL = newCatInfo[2];
+                }
+            }
+        }
+
+        console.log(currentCat)
+
         catView.render();
     }
 };
@@ -143,6 +173,62 @@ var catListView = {
         }
     }
 };
+
+var adminMenuView = {
+
+    init: function () {
+
+        this.adminButton = document.querySelector(".adminButton");
+        this.adminFormSubmitButton = document.querySelector(".submitAdminForm")
+        this.adminFormCancelButton = document.querySelector(".cancelAdminForm")
+
+        this.render();
+
+    },
+
+    render: function () {
+
+        this.adminButton.addEventListener('click', function(){
+            this.adminMenu = document.querySelector(".adminMenu");
+            this.adminMenu.classList.toggle("hiddenMenu");
+        })
+
+        this.adminFormSubmitButton.addEventListener('click', function(){
+
+            let formCatName = document.querySelector("input[name=catName]")
+            let formURL = document.querySelector("input[name=URL]")
+            let formClickNumber = document.querySelector("input[name=clickNumber]")
+
+            octopus.getFormInfo(formClickNumber.value,formCatName.value,formURL.value);
+
+            formCatName.value = ' ';
+            formURL.value = ' ';
+            formClickNumber.value = ' ';
+
+            this.adminMenu = document.querySelector(".adminMenu");
+            this.adminMenu.classList.toggle("hiddenMenu");
+
+        })
+
+        this.adminFormCancelButton.addEventListener('click', function(){
+            let formCatName = document.querySelector("input[name=catName]")
+            let formURL = document.querySelector("input[name=URL]")
+            let formClickNumber = document.querySelector("input[name=clickNumber]")
+
+            formCatName.value = ' ';
+            formURL.value = ' ';
+            formClickNumber.value = ' ';
+
+            this.adminMenu = document.querySelector(".adminMenu");
+            this.adminMenu.classList.toggle("hiddenMenu");
+
+
+        })
+
+
+    }
+
+}
 
 // make it go!
 octopus.init();
